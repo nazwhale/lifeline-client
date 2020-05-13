@@ -1,15 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import styled from "styled-components";
+
+import Login from "./Login";
+
+import logo from "./logo.svg";
+import "./App.css";
+
+const Text = styled.p`
+  color: green;
+`;
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
+        <Text>
           Edit <code>src/App.js</code> and save to reload.
-        </p>
+        </Text>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -18,6 +26,7 @@ function App() {
         >
           Learn React
         </a>
+        <Login />
       </header>
     </div>
   );
