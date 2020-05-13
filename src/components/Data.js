@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 
 export default class Data extends Component {
   state = {
@@ -11,7 +10,7 @@ export default class Data extends Component {
   }
 
   callAPI() {
-    fetch("http://localhost:9000/testAPI")
+    fetch(`${process.env.REACT_APP_API_URL}/testAPI`)
       .then(res => res.text())
       .then(res => this.setState({ apiResponse: res }));
   }
