@@ -14,13 +14,16 @@ const LoggedInContainer = styled.div`
   display: flex;
 `;
 
+// TODO: add auth headers to all requests
+// perhaps abstract this into an api.js util
 export default class Login extends Component {
   state = {
     userDetails: {},
+    getUserRsp: {},
     loggedIn: false
   };
 
-  loginSuccess = googleResponse => {
+  loginSuccess = async googleResponse => {
     console.log("✅ Google login success", googleResponse);
     const email = googleResponse.Qt.zu;
     const token = googleResponse.tokenId;
@@ -28,27 +31,39 @@ export default class Login extends Component {
     const handleNewUserFunc = this.handleNewUser;
     const handleExistingUserFunc = this.handleExistingUser;
 
-    // check if user in db
+    await this.getUser(email, token, handleExistingUserFunc, handleNewUserFunc);
+
+    this.setState({
+      userDetails: googleResponse.profileObj,
+      loggedIn: true
+    });
+  };
+
+  async getUser(email, token, handleExistingUserFunc, handleNewUserFunc) {
+    let getUserRsp;
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/user`, {
+      .get(`${process.env.REACT_APP_API_URL}/user`, {
         params: { email },
         headers: { Authorization: token }
       })
       .then(function(rsp) {
-        console.log(rsp);
+        // if successful, write data to state
+        console.log("get rsp:", rsp);
+        getUserRsp = rsp.data[0];
         handleExistingUserFunc(rsp.data[0].email);
       })
       .catch(function(error) {
         if (error.response.data.code === "user_not_found") {
-          console.log(error.response.data.name, " 🎉");
+          console.log("🤷‍♂️", error.response.data.name);
+          getUserRsp = error.response;
           handleNewUserFunc(email);
         } else {
-          console.log(error);
+          console.log(error.response);
+          getUserRsp = error.response;
         }
-      });
-
-    this.setState({ userDetails: googleResponse.profileObj, loggedIn: true });
-  };
+      })
+      .then(res => this.setState({ getUserRsp }));
+  }
 
   handleNewUser = email => {
     const lastLogin = getISOTimestamp();
@@ -56,7 +71,7 @@ export default class Login extends Component {
     // create a user in db
     console.log("💥 about to create new user for:", email, "at", lastLogin);
     axios
-      .post(`${process.env.REACT_APP_API_URL}/api/user`, {
+      .post(`${process.env.REACT_APP_API_URL}/user`, {
         profile: { email, lastLogin }
       })
       .then(function(rsp) {
@@ -71,7 +86,7 @@ export default class Login extends Component {
     console.log("updating db with lastLogin", email, lastLogin);
 
     axios
-      .put(`${process.env.REACT_APP_API_URL}/api/user`, {
+      .put(`${process.env.REACT_APP_API_URL}/user`, {
         email,
         lastLogin
       })
@@ -95,35 +110,40 @@ export default class Login extends Component {
   };
 
   render() {
-    const { loggedIn, userDetails } = this.state;
+    const { loggedIn, userDetails, getUserRsp } = this.state;
     const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
     return (
-      <LoginButtonContainer>
-        {loggedIn ? (
-          <LoggedInContainer>
-            <GoogleLogout
+      <>
+        <LoginButtonContainer>
+          {loggedIn ? (
+            <LoggedInContainer>
+              <GoogleLogout
+                clientId={googleClientId}
+                buttonText="Sign out"
+                onLogoutSuccess={this.logoutSuccess}
+                onFailure={this.logoutFailure}
+              />
+              <p style={{ marginLeft: "1rem" }}>
+                <span role="img" aria-label="wave">
+                  👋
+                </span>
+                Hi {userDetails.givenName}
+              </p>
+            </LoggedInContainer>
+          ) : (
+            <GoogleLogin
               clientId={googleClientId}
-              buttonText="Sign out"
-              onLogoutSuccess={this.logoutSuccess}
-              onFailure={this.logoutFailure}
+              buttonText="Sign in with Google"
+              onSuccess={this.loginSuccess}
+              onFailure={this.loginFailure}
+              cookiePolicy={"single_host_origin"}
             />
-            <p style={{ marginLeft: "1rem" }}>
-              <span role="img" aria-label="wave">
-                👋
-              </span>
-              Hi {userDetails.givenName}
-            </p>
-          </LoggedInContainer>
-        ) : (
-          <GoogleLogin
-            clientId={googleClientId}
-            buttonText="Sign in with Google"
-            onSuccess={this.loginSuccess}
-            onFailure={this.loginFailure}
-            cookiePolicy={"single_host_origin"}
-          />
-        )}
-      </LoginButtonContainer>
+          )}
+        </LoginButtonContainer>
+        <h3>get user response</h3>
+        <pre>{JSON.stringify(getUserRsp, null, 2)}</pre>
+      </>
     );
   }
 }

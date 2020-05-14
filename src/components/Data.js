@@ -10,7 +10,7 @@ export default class Data extends Component {
   }
 
   callAPI() {
-    fetch(`${process.env.REACT_APP_API_URL}/testAPI`)
+    fetch(`${process.env.REACT_APP_API_URL}`)
       .then(res => res.text())
       .then(res => this.setState({ apiResponse: res }));
   }
