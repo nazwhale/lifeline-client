@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import GoogleLogin from "react-google-login";
 import { GoogleLogout } from "react-google-login";
+import { getISOTimestamp } from "../utils/helpers";
+
+import axios from "axios";
 
 const LoginButtonContainer = styled.div`
   margin-top: 1rem;
@@ -17,9 +20,57 @@ export default class Login extends Component {
     loggedIn: false
   };
 
-  loginSuccess = response => {
-    console.log("✅login success", response);
-    this.setState({ userDetails: response.profileObj, loggedIn: true });
+  loginSuccess = googleResponse => {
+    console.log("✅ Google login success", googleResponse);
+    const email = googleResponse.Qt.zu;
+
+    const handleNewUserFunc = this.handleNewUser;
+    const handleExistingUserFunc = this.handleExistingUser;
+
+    // check if user in db
+    axios
+      .get("http://localhost:9000/api/get/user", {
+        params: { email }
+      })
+      .then(function(rsp) {
+        if (rsp.data.length === 0) {
+          handleNewUserFunc(email);
+        } else {
+          handleExistingUserFunc(rsp.data[0].email);
+        }
+      });
+
+    this.setState({ userDetails: googleResponse.profileObj, loggedIn: true });
+  };
+
+  handleNewUser = email => {
+    const lastLogin = getISOTimestamp();
+
+    // create a user in db
+    console.log("💥 about to create new user for:", email, "at", lastLogin);
+    axios
+      .post("http://localhost:9000/api/post/user", {
+        profile: { email, lastLogin }
+      })
+      .then(function(rsp) {
+        console.log("✉️ post rsp", rsp);
+      });
+  };
+
+  handleExistingUser = email => {
+    console.log("👋 existing user:", email);
+
+    const lastLogin = getISOTimestamp();
+    console.log("updating db with lastLogin", email, lastLogin);
+
+    axios
+      .put("http://localhost:9000/api/put/user", {
+        email,
+        lastLogin
+      })
+      .then(function(rsp) {
+        console.log("✉️ put rsp", rsp);
+      });
   };
 
   loginFailure = response => {
