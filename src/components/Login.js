@@ -23,20 +23,27 @@ export default class Login extends Component {
   loginSuccess = googleResponse => {
     console.log("✅ Google login success", googleResponse);
     const email = googleResponse.Qt.zu;
+    const token = googleResponse.tokenId;
 
     const handleNewUserFunc = this.handleNewUser;
     const handleExistingUserFunc = this.handleExistingUser;
 
     // check if user in db
     axios
-      .get("http://localhost:9000/api/get/user", {
-        params: { email }
+      .get(`${process.env.REACT_APP_API_URL}/api/user`, {
+        params: { email },
+        headers: { Authorization: token }
       })
       .then(function(rsp) {
-        if (rsp.data.length === 0) {
+        console.log(rsp);
+        handleExistingUserFunc(rsp.data[0].email);
+      })
+      .catch(function(error) {
+        if (error.response.data.code === "user_not_found") {
+          console.log(error.response.data.name, " 🎉");
           handleNewUserFunc(email);
         } else {
-          handleExistingUserFunc(rsp.data[0].email);
+          console.log(error);
         }
       });
 
@@ -49,7 +56,7 @@ export default class Login extends Component {
     // create a user in db
     console.log("💥 about to create new user for:", email, "at", lastLogin);
     axios
-      .post("http://localhost:9000/api/post/user", {
+      .post(`${process.env.REACT_APP_API_URL}/api/user`, {
         profile: { email, lastLogin }
       })
       .then(function(rsp) {
@@ -64,7 +71,7 @@ export default class Login extends Component {
     console.log("updating db with lastLogin", email, lastLogin);
 
     axios
-      .put("http://localhost:9000/api/put/user", {
+      .put(`${process.env.REACT_APP_API_URL}/api/user`, {
         email,
         lastLogin
       })
