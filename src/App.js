@@ -7,8 +7,8 @@ function App() {
     <div>
       <header>
         <h1>Lifeline</h1>
-        <Login />
         <Data />
+        <Login />
       </header>
     </div>
   );

@@ -17,6 +17,6 @@ export default class Data extends Component {
 
   render() {
     const { apiResponse } = this.state;
-    return <h3>{apiResponse}</h3>;
+    return <h2>{apiResponse}</h2>;
   }
 }
