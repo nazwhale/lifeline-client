@@ -2,13 +2,29 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
+import { theme } from "../theme";
+
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  width: 200px;
 `;
 
 const Label = styled.label`
+  display: flex;
+  flex-direction: column;
   margin-bottom: 1rem;
+`;
+
+const SubmitButton = styled.input`
+  font-size: 16px;
+  background-color: ${props =>
+    props.enabled ? theme.color.primary : theme.color.disabled};
+  color: ${theme.color.white};
+  width: 100px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border: none;
 `;
 
 export default class CreateExperience extends Component {
@@ -22,7 +38,7 @@ export default class CreateExperience extends Component {
 
   createExperience = () => {
     const { title, startDate, endDate } = this.state;
-    const { refetchExperiences } = this.props;
+    const { token, userId, refetchExperiences } = this.props;
 
     let createRsp = null;
     let error = null;
@@ -34,12 +50,11 @@ export default class CreateExperience extends Component {
           title,
           start_date: startDate,
           end_date: endDate,
-          user_id: 3
+          user_id: userId
         },
         {
           headers: {
-            Authorization:
-              "eyJhbGciOiJSUzI1NiIsImtpZCI6ImMxNzcxODE0YmE2YTcwNjkzZmI5NDEyZGEzYzZlOTBjMmJmNWI5MjciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiMjQ1NDk0ODM2MDM2LXZhbnJ2YTlwaGdjMmFrcXNxb3NhcW8wNmM5N3NiMzViLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMjQ1NDk0ODM2MDM2LXZhbnJ2YTlwaGdjMmFrcXNxb3NhcW8wNmM5N3NiMzViLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTA3MTQ2NzQzNzI3OTQ2NjQ2MjAyIiwiZW1haWwiOiJuYXptYWxpazA4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiMmp0R05udWxQX0g1WFV3Sk9zeVJFZyIsIm5hbWUiOiJOYXogTWFsaWsiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EtL0FPaDE0R2dKYmdiaDlGQ1hjWkE4MzAyLUR6dWpidkUydEFxMFpkZWg2WlNXbWc9czk2LWMiLCJnaXZlbl9uYW1lIjoiTmF6IiwiZmFtaWx5X25hbWUiOiJNYWxpayIsImxvY2FsZSI6ImVuLUdCIiwiaWF0IjoxNTg5ODAwNTg1LCJleHAiOjE1ODk4MDQxODUsImp0aSI6IjExZWI1NmE3YjA5MDFhZmY5MzA5ZDc1OTdjYWIyNDQ4M2I5ODY0MWUifQ.oA9fKAK-wTKC6WUhSaejUG1CqwjeD8-V8OMnNgpGNpjTQsdCpIqA_zlA37bTRK1TeypHRYioCnAvUmHfX1I_WyBM9cXsjo-FczRyBkTd3gTBDXy91n9qnOGJkvry7KVjDmP6Cwtu6ZEkQ2M1lhgPz27jUbdEYiUWpqEubgv8gJbvPBcMwv0cOtbAYDtHUuPT8qFxP5ofb2S_1qUI6nM1bykBpK2W7ITMytJAZYmRCCc0K7qunTFVgg4qXCoaOEe1edY_pL5DUDs95TrJpju-JzcQwhvZnyzWV7qFtBc021GHHv8ONQ7UFNpUIg7_2dN1eL_jsecIw0BrHBTHHO5eMQ"
+            Authorization: token
           }
         }
       )
@@ -61,6 +76,13 @@ export default class CreateExperience extends Component {
     this.createExperience();
   };
 
+  submitEnabled = () => {
+    const { title, startDate, endDate } = this.state;
+    return (
+      title !== "" && startDate !== "" && endDate !== "" && startDate < endDate
+    );
+  };
+
   handleInputChange = event => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
@@ -69,12 +91,14 @@ export default class CreateExperience extends Component {
   render() {
     const { title, startDate, endDate, error } = this.state;
 
+    const submitEnabled = this.submitEnabled();
+
     return (
       <>
-        <h2>create experience</h2>
+        <h2>Create experience</h2>
         <Form onSubmit={this.handleSubmit}>
           <Label>
-            Name:
+            Name
             <input
               type="text"
               name="title"
@@ -83,7 +107,7 @@ export default class CreateExperience extends Component {
             />
           </Label>
           <Label>
-            Start date:
+            Start date
             <input
               type="date"
               name="startDate"
@@ -92,7 +116,7 @@ export default class CreateExperience extends Component {
             />
           </Label>
           <Label>
-            End date:
+            End date
             <input
               type="date"
               name="endDate"
@@ -101,7 +125,7 @@ export default class CreateExperience extends Component {
             />
           </Label>
 
-          <input type="submit" value="submit" />
+          <SubmitButton type="submit" value="Submit" enabled={submitEnabled} />
         </Form>
         {error && (
           <>

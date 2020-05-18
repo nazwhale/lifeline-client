@@ -4,6 +4,8 @@ import axios from "axios";
 import GoogleLogin from "react-google-login";
 import { GoogleLogout } from "react-google-login";
 
+import Experiences from "./Experiences";
+
 const LoginButtonContainer = styled.div`
   margin-top: 1rem;
 `;
@@ -15,7 +17,8 @@ const LoggedInContainer = styled.div`
 export default class Login extends Component {
   state = {
     googleUserDetails: {},
-    getUserRsp: {},
+    getUserRsp: null,
+    token: "",
     loggedIn: false
   };
 
@@ -23,12 +26,12 @@ export default class Login extends Component {
     console.log("✅ Google login success", googleResponse);
     const email = googleResponse.Qt.zu;
     const token = googleResponse.tokenId;
-    console.log(token);
 
     await this.postLoginSuccess(token, email, googleResponse.googleId);
 
     this.setState({
       googleUserDetails: googleResponse.profileObj,
+      token,
       loggedIn: true
     });
   };
@@ -70,11 +73,12 @@ export default class Login extends Component {
   };
 
   render() {
-    const { loggedIn, googleUserDetails, getUserRsp } = this.state;
+    const { loggedIn, googleUserDetails, getUserRsp, token } = this.state;
     const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
     return (
       <>
+        <h2>Login</h2>
         <LoginButtonContainer>
           {loggedIn ? (
             <LoggedInContainer>
@@ -101,8 +105,13 @@ export default class Login extends Component {
             />
           )}
         </LoginButtonContainer>
-        <h3>login response</h3>
+
+        <h3>Response</h3>
         <pre>{JSON.stringify(getUserRsp, null, 2)}</pre>
+
+        {loggedIn && getUserRsp != null && (
+          <Experiences token={token} userId={getUserRsp.user_id} />
+        )}
       </>
     );
   }

@@ -3,10 +3,13 @@ var styles = require("./index.css");
 export const theme = {
   styles: styles,
   color: {
-    link: "#007ACC",
-    paleLink: "rgba(0,122,204,0.6)",
+    black: "rgba(0, 0, 0, 0.9)",
+    white: "rgb(255,255,255)",
+    primary: "#18A0FB",
+    disabled: "rgb(169,169,169)",
     lightGrey: "rgba(211,211,211,0.3)",
-    black: "rgba(0, 0, 0, 0.9)"
+    link: "#007ACC",
+    paleLink: "rgba(0,122,204,0.6)"
   },
   box: {
     borderRadius: "5px",

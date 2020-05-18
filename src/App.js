@@ -1,6 +1,5 @@
 import React from "react";
 import Login from "./components/Login";
-import Experiences from "./components/Experiences";
 
 function App() {
   return (
@@ -8,7 +7,6 @@ function App() {
       <header>
         <h1>Lifeline</h1>
         <Login />
-        <Experiences />
       </header>
     </div>
   );
