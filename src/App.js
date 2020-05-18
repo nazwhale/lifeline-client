@@ -1,14 +1,14 @@
 import React from "react";
 import Login from "./components/Login";
-import Data from "./components/Data";
+import Experiences from "./components/Experiences";
 
 function App() {
   return (
     <div>
       <header>
         <h1>Lifeline</h1>
-        <Data />
         <Login />
+        <Experiences />
       </header>
     </div>
   );

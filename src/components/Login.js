@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import GoogleLogin from "react-google-login";
 import { GoogleLogout } from "react-google-login";
-
-import axios from "axios";
 
 const LoginButtonContainer = styled.div`
   margin-top: 1rem;
@@ -24,6 +23,7 @@ export default class Login extends Component {
     console.log("✅ Google login success", googleResponse);
     const email = googleResponse.Qt.zu;
     const token = googleResponse.tokenId;
+    console.log(token);
 
     await this.postLoginSuccess(token, email, googleResponse.googleId);
 
