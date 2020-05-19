@@ -12,6 +12,13 @@ const LoginButtonContainer = styled.div`
 
 const LoggedInContainer = styled.div`
   display: flex;
+  justify-content: flex-end;
+`;
+
+const GoogleIcon = styled.img`
+  height: 3rem;
+  border-radius: 100%;
+  margin-left: 1rem;
 `;
 
 export default class Login extends Component {
@@ -23,11 +30,15 @@ export default class Login extends Component {
   };
 
   loginSuccess = async googleResponse => {
+    const { setLoggedIn } = this.props;
+
     console.log("✅ Google login success", googleResponse);
     const email = googleResponse.Qt.zu;
     const token = googleResponse.tokenId;
 
     await this.postLoginSuccess(token, email, googleResponse.googleId);
+
+    // setLoggedIn(true);
 
     this.setState({
       googleUserDetails: googleResponse.profileObj,
@@ -74,13 +85,16 @@ export default class Login extends Component {
 
   render() {
     const { loggedIn, googleUserDetails, getUserRsp, token } = this.state;
+
+    console.log(getUserRsp);
     const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    // {loggedIn && getUserRsp != null && (
+    const imgUrl = googleUserDetails.imageUrl;
 
     return (
       <>
-        <h2>Login</h2>
-        <LoginButtonContainer>
-          {loggedIn ? (
+        {loggedIn === true && getUserRsp != null ? (
+          <>
             <LoggedInContainer>
               <GoogleLogout
                 clientId={googleClientId}
@@ -88,29 +102,30 @@ export default class Login extends Component {
                 onLogoutSuccess={this.logoutSuccess}
                 onFailure={this.logoutFailure}
               />
-              <p style={{ marginLeft: "1rem" }}>
-                <span role="img" aria-label="wave">
-                  👋
-                </span>
-                Hi {googleUserDetails.givenName}
-              </p>
+              <GoogleIcon src={imgUrl} />
             </LoggedInContainer>
-          ) : (
-            <GoogleLogin
-              clientId={googleClientId}
-              buttonText="Sign in with Google"
-              onSuccess={this.loginSuccess}
-              onFailure={this.loginFailure}
-              cookiePolicy={"single_host_origin"}
+            <Experiences
+              token={token}
+              userId={getUserRsp.id}
+              birthDate="1992-01-01"
             />
-          )}
-        </LoginButtonContainer>
+          </>
+        ) : (
+          <>
+            <h2>Login</h2>
+            <LoginButtonContainer>
+              <GoogleLogin
+                clientId={googleClientId}
+                buttonText="Sign in with Google"
+                onSuccess={this.loginSuccess}
+                onFailure={this.loginFailure}
+                cookiePolicy={"single_host_origin"}
+              />
+            </LoginButtonContainer>
 
-        <h3>Response</h3>
-        <pre>{JSON.stringify(getUserRsp, null, 2)}</pre>
-
-        {loggedIn && getUserRsp != null && (
-          <Experiences token={token} userId={getUserRsp.user_id} />
+            <h3>Response</h3>
+            <pre>{JSON.stringify(getUserRsp, null, 2)}</pre>
+          </>
         )}
       </>
     );

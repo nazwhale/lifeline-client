@@ -16,6 +16,10 @@ const Label = styled.label`
   margin-bottom: 1rem;
 `;
 
+const Input = styled.input`
+  font-size: 16px;
+`;
+
 const SubmitButton = styled.input`
   font-size: 16px;
   background-color: ${props =>
@@ -99,7 +103,7 @@ export default class CreateExperience extends Component {
         <Form onSubmit={this.handleSubmit}>
           <Label>
             Name
-            <input
+            <Input
               type="text"
               name="title"
               value={title}
@@ -108,7 +112,7 @@ export default class CreateExperience extends Component {
           </Label>
           <Label>
             Start date
-            <input
+            <Input
               type="date"
               name="startDate"
               value={startDate}
@@ -117,7 +121,7 @@ export default class CreateExperience extends Component {
           </Label>
           <Label>
             End date
-            <input
+            <Input
               type="date"
               name="endDate"
               value={endDate}

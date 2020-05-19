@@ -7,6 +7,7 @@ export const theme = {
     white: "rgb(255,255,255)",
     primary: "#18A0FB",
     disabled: "rgb(169,169,169)",
+    grey: "rgba(211,211,211)",
     lightGrey: "rgba(211,211,211,0.3)",
     link: "#007ACC",
     paleLink: "rgba(0,122,204,0.6)"
