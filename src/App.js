@@ -15,6 +15,9 @@ export default class App extends Component {
     // Consider a withAuth higher order component instead of state here
     return (
       <>
+        <header>
+          <h1>Lifeline</h1>
+        </header>
         <Login setLoggedIn={this.setLoggedIn} />
       </>
     );

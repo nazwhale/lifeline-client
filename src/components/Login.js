@@ -20,7 +20,7 @@ const LoginButtonContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 1rem;
-  margin-top: 20%;
+  margin-top: 15%;
 `;
 
 const LoggedInContainer = styled.div`
@@ -35,6 +35,7 @@ const GoogleIcon = styled.img`
 `;
 
 const LoginButton = styled.button`
+  position: relative;
   background-color: ${theme.color.primary};
   color: ${theme.color.white};
 
@@ -47,6 +48,7 @@ const LoginButton = styled.button`
   font-weight: 700;
   border-radius: 0.2rem;
   padding: 1rem 2rem;
+  padding-left: 3.5rem;
   border: none;
   cursor: pointer;
 
@@ -54,8 +56,10 @@ const LoginButton = styled.button`
 `;
 
 const LoginIcon = styled.img`
+  position: absolute;
   height: 1rem;
-  padding-right: 0.3rem;
+  top: 17px;
+  left: 30px;
 `;
 
 export default class Login extends Component {
