@@ -17,6 +17,16 @@ https://rsms.me/inter/
 https://www.typography.com/fonts/styles/wide $100
 https://fonts.adobe.com/fonts/presicav
 */
+
+html,
+body {
+  height: 100%;
+}
+
+body > #root {
+  height: 65vh;
+}
+
 body {
   margin: 2rem 4rem;
   font-family: "Titillium Web", -apple-system, BlinkMacSystemFont, "Segoe UI",

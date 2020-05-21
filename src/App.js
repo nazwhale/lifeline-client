@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Login from "./components/Login";
+import Header from "./components/Header";
 
 export default class App extends Component {
   state = {
@@ -13,13 +14,14 @@ export default class App extends Component {
 
   render() {
     // Consider a withAuth higher order component instead of state here
+    //
+    // Pass auth into Header component so it can decide whether to render the
+    // "sign out" button
     return (
-      <>
-        <header>
-          <h1>Lifeline</h1>
-        </header>
+      <div style={{ height: "inherit" }}>
+        <Header />
         <Login setLoggedIn={this.setLoggedIn} />
-      </>
+      </div>
     );
   }
 }

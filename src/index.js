@@ -11,8 +11,8 @@ import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <div>
+    <Router style={{ height: "inherit" }}>
+      <div style={{ height: "inherit" }}>
         <Route exact path="/" component={App} />
         <Route exact path="/login" component={Login} />
       </div>

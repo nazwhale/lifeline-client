@@ -9,6 +9,7 @@ import gIcon from "../assets/gIcon.svg";
 import Experiences from "./Experiences";
 
 const Container = styled.div`
+  height: inherit;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,8 +20,6 @@ const LoginButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 1rem;
-  margin-top: 15%;
 `;
 
 const LoggedInContainer = styled.div`
