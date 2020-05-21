@@ -1,22 +1,37 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import WebFont from "webfontloader";
+
 import "./theme/index.css";
 import App from "./App";
-import * as serviceWorker from "./serviceWorker";
+import Login from "./components/login/Login";
 
-import WebFont from "webfontloader";
+import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <div>
+        <Route exact path="/" component={App} />
+        <Route exact path="/login" component={Login} />
+      </div>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
+/*
+  If you want your app to work offline and load faster, you can change
+  unregister() to register() below. Note this comes with some pitfalls.
+  Learn more about service workers: https://bit.ly/CRA-PWA
+*/
+
 serviceWorker.unregister();
+
+/*
+  Load fonts
+*/
 
 WebFont.load({
   google: {

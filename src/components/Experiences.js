@@ -51,14 +51,11 @@ export default class Experiences extends Component {
     let error = null;
 
     axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/experiences/user/?user_id=${userId}`,
-        {
-          headers: {
-            Authorization: token
-          }
+      .get(`${process.env.REACT_APP_API_URL}/experiences/user/${userId}`, {
+        headers: {
+          Authorization: token
         }
-      )
+      })
       .then(function(rsp) {
         experiences = rsp.data.experiences;
       })

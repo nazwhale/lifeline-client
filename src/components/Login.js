@@ -3,22 +3,59 @@ import styled from "styled-components";
 import axios from "axios";
 import GoogleLogin from "react-google-login";
 import { GoogleLogout } from "react-google-login";
+import { theme } from "../theme";
+import gIcon from "../assets/gIcon.svg";
 
 import Experiences from "./Experiences";
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
 const LoginButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 1rem;
+  margin-top: 20%;
 `;
 
 const LoggedInContainer = styled.div`
   display: flex;
+  align-items: center;
   justify-content: flex-end;
 `;
 
 const GoogleIcon = styled.img`
-  height: 3rem;
   border-radius: 100%;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
+`;
+
+const LoginButton = styled.button`
+  background-color: ${theme.color.primary};
+  color: ${theme.color.white};
+
+  &:hover {
+    background-color: ${theme.color.primaryHover};
+  }
+
+  font-size: 16px;
+  letter-spacing: 0.05rem;
+  font-weight: 700;
+  border-radius: 0.2rem;
+  padding: 1rem 2rem;
+  border: none;
+  cursor: pointer;
+
+  margin-top: 1rem;
+`;
+
+const LoginIcon = styled.img`
+  height: 1rem;
+  padding-right: 0.3rem;
 `;
 
 export default class Login extends Component {
@@ -30,15 +67,11 @@ export default class Login extends Component {
   };
 
   loginSuccess = async googleResponse => {
-    const { setLoggedIn } = this.props;
-
     console.log("✅ Google login success", googleResponse);
-    const email = googleResponse.Qt.zu;
+    const email = googleResponse.profileObj.email;
     const token = googleResponse.tokenId;
 
     await this.postLoginSuccess(token, email, googleResponse.googleId);
-
-    // setLoggedIn(true);
 
     this.setState({
       googleUserDetails: googleResponse.profileObj,
@@ -86,13 +119,12 @@ export default class Login extends Component {
   render() {
     const { loggedIn, googleUserDetails, getUserRsp, token } = this.state;
 
-    console.log(getUserRsp);
     const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     // {loggedIn && getUserRsp != null && (
     const imgUrl = googleUserDetails.imageUrl;
 
     return (
-      <>
+      <Container>
         {loggedIn === true && getUserRsp != null ? (
           <>
             <LoggedInContainer>
@@ -112,22 +144,28 @@ export default class Login extends Component {
           </>
         ) : (
           <>
-            <h2>Login</h2>
             <LoginButtonContainer>
+              <h2 style={{ fontWeight: "normal" }}>Hello stranger</h2>
               <GoogleLogin
                 clientId={googleClientId}
                 buttonText="Sign in with Google"
                 onSuccess={this.loginSuccess}
                 onFailure={this.loginFailure}
                 cookiePolicy={"single_host_origin"}
+                render={renderProps => (
+                  <LoginButton
+                    onClick={renderProps.onClick}
+                    disabled={renderProps.disabled}
+                  >
+                    <LoginIcon src={gIcon} alt="g icon " />
+                    Sign in with Google
+                  </LoginButton>
+                )}
               />
             </LoginButtonContainer>
-
-            <h3>Response</h3>
-            <pre>{JSON.stringify(getUserRsp, null, 2)}</pre>
           </>
         )}
-      </>
+      </Container>
     );
   }
 }

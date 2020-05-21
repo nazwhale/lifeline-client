@@ -1,8 +1,5 @@
 import React, { Component } from "react";
 import Login from "./components/Login";
-import styled from "styled-components";
-
-const Header = styled.header``;
 
 export default class App extends Component {
   state = {
@@ -15,11 +12,11 @@ export default class App extends Component {
   };
 
   render() {
+    // Consider a withAuth higher order component instead of state here
     return (
-      <Header>
-        <h1>Lifeline</h1>
+      <>
         <Login setLoggedIn={this.setLoggedIn} />
-      </Header>
+      </>
     );
   }
 }
