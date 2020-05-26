@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import CreateExperience from "./CreateExperience";
 import { theme } from "../theme";
+
+import { fetchFromAPI } from "./helpers/apiHelpers.js";
 
 const Container = styled.div`
   display: flex;
@@ -50,12 +51,7 @@ export default class Experiences extends Component {
     let experiences = [];
     let error = null;
 
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/experiences/user/${userId}`, {
-        headers: {
-          Authorization: token
-        }
-      })
+    fetchFromAPI("GET", `experiences/user/${userId}`, {}, token)
       .then(function(rsp) {
         experiences = rsp.data.experiences;
       })

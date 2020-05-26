@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import GoogleLogin from "react-google-login";
 import { GoogleLogout } from "react-google-login";
 import { theme } from "../theme";
 import gIcon from "../assets/gIcon.svg";
 
+import { fetchFromAPI } from "./helpers/apiHelpers.js";
 import Experiences from "./Experiences";
 
 const Container = styled.div`
@@ -85,17 +85,16 @@ export default class Login extends Component {
 
   async postLoginSuccess(token, email, googleId) {
     let getUserRsp = {};
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/users/login`,
-        {
-          profile: { email },
-          login_info: { login_type: "google", external_login_id: googleId }
-        },
-        {
-          headers: { Authorization: token }
-        }
-      )
+
+    fetchFromAPI(
+      "POST",
+      "users/login",
+      {
+        profile: { email },
+        login_info: { login_type: "google", external_login_id: googleId }
+      },
+      token
+    )
       .then(function(rsp) {
         getUserRsp = rsp.data;
       })

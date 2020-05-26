@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import axios from "axios";
+import { fetchFromAPI } from "./helpers/apiHelpers.js";
 
 import { theme } from "../theme";
 
@@ -47,21 +47,17 @@ export default class CreateExperience extends Component {
     let createRsp = null;
     let error = null;
 
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/experiences`,
-        {
-          title,
-          start_date: startDate,
-          end_date: endDate,
-          user_id: userId
-        },
-        {
-          headers: {
-            Authorization: token
-          }
-        }
-      )
+    fetchFromAPI(
+      "POST",
+      "experiences",
+      {
+        title,
+        start_date: startDate,
+        end_date: endDate,
+        user_id: userId
+      },
+      token
+    )
       .then(function(rsp) {
         createRsp = rsp.data;
         if (rsp.data.code === "date_clash_experience") {
