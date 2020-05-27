@@ -1,17 +1,16 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 import Header from "./components/Header";
+import Experiences from "./components/experiences";
+
 import { fetchFromAPI } from "./components/helpers/apiHelpers.js";
 import queryString from "query-string";
-import { theme } from "./theme";
-import gIcon from "./assets/gIcon.svg";
-import Button from "./components/atoms/Button";
 import withAuth from "./components/login/withAuth";
-import AuthService from "./components/login/AuthService";
 
-const Auth = new AuthService();
+export const UserContext = React.createContext({
+  name: "Guest"
+});
 
 class App extends Component {
   state = {
@@ -55,6 +54,7 @@ class App extends Component {
 
   render() {
     const { isLoading, loggedIn } = this.state;
+    const { signedInUser } = this.props;
 
     if (isLoading) {
       return <h2>loading...</h2>;
@@ -62,17 +62,25 @@ class App extends Component {
 
     // Pass auth into Header component so it can decide whether to render the
     // "sign out" button
+    //
+    // consider Context.Provider
+    // https://reactjs.org/docs/context.html#when-to-use-context
     return (
-      <div style={{ height: "inherit" }}>
-        <Header loggedIn={loggedIn} />
-        {loggedIn ? (
-          <p>Oh hey you logged in person you</p>
-        ) : (
-          <Link to="/login" style={{ textDecoration: "none" }}>
-            <p>login</p>
-          </Link>
-        )}
-      </div>
+      <UserContext.Provider value={signedInUser}>
+        <div style={{ height: "inherit" }}>
+          <Header loggedIn={loggedIn} />
+          {loggedIn ? (
+            <>
+              <p>Oh hey you logged in person you</p>
+              <Experiences />
+            </>
+          ) : (
+            <Link to="/login" style={{ textDecoration: "none" }}>
+              <p>login</p>
+            </Link>
+          )}
+        </div>
+      </UserContext.Provider>
     );
   }
 }

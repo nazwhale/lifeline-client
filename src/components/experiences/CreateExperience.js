@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { fetchFromAPI } from "./helpers/apiHelpers.js";
+import { fetchFromAPI } from "../helpers/apiHelpers.js";
 
-import { theme } from "../theme";
+import { theme } from "../../theme";
 
 const Form = styled.form`
   display: flex;

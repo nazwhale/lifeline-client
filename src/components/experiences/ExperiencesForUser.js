@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import CreateExperience from "./CreateExperience";
-import { theme } from "../theme";
+import { theme } from "../../theme";
 
-import { fetchFromAPI } from "./helpers/apiHelpers.js";
+import { fetchFromAPI } from "../helpers/apiHelpers.js";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column-reverse;
   align-items: center;
-  /* width: 20rem; */
 `;
 
 const scale = 1.5;
@@ -36,7 +35,7 @@ const Year = styled.strong`
   align-self: flex-end;
 `;
 
-export default class Experiences extends Component {
+class ExperiencesForUser extends Component {
   state = {
     experiences: [],
     error: null
@@ -47,11 +46,11 @@ export default class Experiences extends Component {
   }
 
   getExperiencesForUserId = () => {
-    const { token, userId } = this.props;
+    const { token, user } = this.props;
     let experiences = [];
     let error = null;
 
-    fetchFromAPI("GET", `experiences/user/${userId}`, {}, token)
+    fetchFromAPI("GET", `experiences/user/${user.id}`, {}, token)
       .then(function(rsp) {
         experiences = rsp.data.experiences;
       })
@@ -63,7 +62,7 @@ export default class Experiences extends Component {
 
   render() {
     const { experiences, error } = this.state;
-    const { token, userId, birthDate } = this.props;
+    const { token, user } = this.props;
 
     if (error) {
       return (
@@ -78,7 +77,7 @@ export default class Experiences extends Component {
         <Container>
           {experiences.map((e, i) => {
             // years since previous end date
-            const prev = i === 0 ? birthDate : experiences[i - 1].end_date;
+            const prev = i === 0 ? user.birthDate : experiences[i - 1].end_date;
             const ysPrev = yearsSince(prev, e.start_date);
 
             // years of experience
@@ -94,7 +93,7 @@ export default class Experiences extends Component {
                     >
                       🐣
                     </span>{" "}
-                    <Year>{tsToYear(birthDate)}</Year>
+                    <Year>{tsToYear(user.birthDate)}</Year>
                   </>
                 )}
                 {ysPrev !== 0 && <Node yoExperience={ysPrev} gap={true} />}
@@ -107,13 +106,14 @@ export default class Experiences extends Component {
         </Container>
         <CreateExperience
           token={token}
-          userId={userId}
+          userId={user.id}
           refetchExperiences={this.getExperiencesForUserId}
         />
       </>
     );
   }
 }
+export default ExperiencesForUser;
 
 // {e.title} • {longTimestampToReadable(e.start_date)} to{" "}
 // {longTimestampToReadable(e.end_date)}
@@ -130,6 +130,6 @@ function tsToYear(ts) {
   return d.getFullYear();
 }
 
-function longTimestampToReadable(ts) {
-  return new Date(ts).toISOString().slice(0, 10);
-}
+// function longTimestampToReadable(ts) {
+//   return new Date(ts).toISOString().slice(0, 10);
+// }

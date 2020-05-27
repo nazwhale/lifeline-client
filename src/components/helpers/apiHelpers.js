@@ -4,20 +4,18 @@ export function fetchFromAPI(method, path, data, token) {
   const url = `${process.env.REACT_APP_API_URL}/${path}`;
   const headers = { "Content-Type": "application/json" };
 
-  const apiToken = localStorage.getItem("api_token");
-  console.log("local storage token:", apiToken);
-  if (apiToken !== null) {
-    headers["Authorization"] = apiToken;
-  }
+  // TODO: make sure cookie passed through in headers
 
-  if (token != null) {
-    headers["Authorization"] = token;
+  if (token == null) {
+    console.log("No token!", token);
   }
+  headers["Authorization"] = token;
 
   return axios({
     method,
     url,
     headers,
+    withCredentials: true,
     data
   }).then(_checkStatus);
 }
